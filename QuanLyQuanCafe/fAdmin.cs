@@ -20,6 +20,10 @@ namespace QuanLyQuanCafe
 
         BindingSource accountList = new BindingSource();
 
+        BindingSource tableList = new BindingSource();
+
+        BindingSource FoodCategory = new BindingSource();
+
         public Account loginAccount;
         public fAdmin()
         {
@@ -39,14 +43,20 @@ namespace QuanLyQuanCafe
         {
             dtgvFood.DataSource = foodList;
             dtgvAccount.DataSource = accountList;
+            dtgvTable.DataSource = tableList;
+            dtgvCategory.DataSource = FoodCategory;
 
             LoadDateTimePickerBill();
             LoadListBillByDate(dtpkFromDate.Value, dtpkToDate.Value);
             LoadListFood();
             LoadAccount();
+            LoadTable();
+            LoadFoodCategory();
             LoadCategoryIntoCombobox(cbFoodCategory);
             AddFoodBinding();
             AddAccountBinding();
+            AddTabelBinding();
+            AddFoodCategoryBinding();
         }
 
         void AddAccountBinding()
@@ -59,6 +69,14 @@ namespace QuanLyQuanCafe
         void LoadAccount()
         {
             accountList.DataSource = AccountDAO.Instance.GetListAccount();
+        }
+        void LoadTable()
+        {
+            tableList.DataSource = TableDAO.Instance.GetListTable();
+        }
+        void LoadFoodCategory()
+        {
+            FoodCategory.DataSource = CategoryDAO.Instance.GetListCategory();
         }
         void LoadDateTimePickerBill()
         {
@@ -362,6 +380,85 @@ namespace QuanLyQuanCafe
             this.USP_GetListBillByDateForReportTableAdapter.Fill(this.QuanLyQuanCafeDataSet2.USP_GetListBillByDateForReport, dtpkFromDate.Value, dtpkToDate.Value);           
 
             this.rpViewer.RefreshReport();
+        }
+        void AddTabelBinding()
+        {
+            txtTableid.DataBindings.Add(new Binding("Text", dtgvTable.DataSource, "id", true, DataSourceUpdateMode.Never));
+            txtTableName.DataBindings.Add(new Binding("Text", dtgvTable.DataSource, "name", true, DataSourceUpdateMode.Never));
+  
+        }
+        private void btnAddTable_Click(object sender, EventArgs e)
+        {
+            String tableId = txtTableid.Text;
+            String tableUsername = txtTableName.Text;
+            if( tableUsername.Equals(""))
+            {
+                MessageBox.Show("Điền đầy đủ thông tin");
+            }
+            else
+            {
+                TableDAO.Instance.InsertTable(tableUsername,"Trống");
+                LoadTable();
+                MessageBox.Show("Thêm thành công"); 
+            }    
+        }
+
+        private void btnDeleteTable_Click(object sender, EventArgs e)
+        {
+            string nameTable = txtTableName.Text;
+
+            TableDAO.Instance.DeleteTable(nameTable);
+            LoadTable();
+            MessageBox.Show("Xóa thành công");
+        }
+
+        private void btnEditTable_Click(object sender, EventArgs e)
+        {
+            String tableId = txtTableid.Text;
+            String tableUsername = txtTableName.Text;
+            TableDAO.Instance.UpdateTable(tableId, tableUsername);
+            LoadTable();
+            MessageBox.Show("Sửa thành công");
+        }
+        void  AddFoodCategoryBinding()
+        {
+            txbCategoryID.DataBindings.Add(new Binding("Text", dtgvCategory.DataSource, "id", true, DataSourceUpdateMode.Never));
+            txbCategoryName.DataBindings.Add(new Binding("Text", dtgvCategory.DataSource, "name", true, DataSourceUpdateMode.Never));
+           
+        }
+
+        private void btnAddCategory_Click(object sender, EventArgs e)
+        {
+            String FoodCategoryname = txbCategoryName.Text;
+            if (FoodCategoryname.Equals(""))
+            {
+                MessageBox.Show("Điền đầy đủ thông tin");
+            }
+            else
+            {
+                CategoryDAO.Instance.InsertFoodCategory(FoodCategoryname);
+                LoadFoodCategory();
+                MessageBox.Show("Thêm thành công");
+            }
+        }
+
+        private void btnDeleteCategory_Click(object sender, EventArgs e)
+        {
+            String FoodCategoryname = txbCategoryName.Text;
+
+            CategoryDAO.Instance.DeleteFoodCategory(FoodCategoryname);
+            LoadFoodCategory();
+            MessageBox.Show("Xóa thành công");
+        }
+
+        private void btnEditCategory_Click(object sender, EventArgs e)
+        {
+            String FoodCategoryId = txbCategoryID.Text;
+            String FoodCategoryname = txbCategoryName.Text;
+
+            CategoryDAO.Instance.UpdateFoodCategory(FoodCategoryId, FoodCategoryname);
+            LoadFoodCategory();
+            MessageBox.Show("Sửa thành công");
         }
     }
 }

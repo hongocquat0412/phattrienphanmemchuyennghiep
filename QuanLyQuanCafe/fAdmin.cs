@@ -212,6 +212,7 @@ namespace QuanLyQuanCafe
         private void btnSearchFood_Click(object sender, EventArgs e)
         {
             foodList.DataSource = SearchFoodByName(txbSearchFoodName.Text);
+           
         }
         private void txbFoodID_TextChanged(object sender, EventArgs e)
         {
